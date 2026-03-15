@@ -1,0 +1,92 @@
+# Product Review Sentiment Analysis System
+
+Build a complete Python NLP application that classifies product reviews as **Positive**, **Negative**, or **Neutral**. Uses scikit-learn ML pipeline with a Streamlit web interface.
+
+**Existing asset:** [product_review_sentiment_dataset.csv](file:///c:/Users/Roopesh/OneDrive/Desktop/Sentiment%20analysis/product_review_sentiment_dataset.csv) (301 labeled reviews with `review_text` and `sentiment` columns).
+
+## Proposed Changes
+
+All files will be created in `c:\Users\Roopesh\OneDrive\Desktop\Sentiment analysis\`.
+
+---
+
+### Project Setup
+
+#### [NEW] [requirements.txt](file:///c:/Users/Roopesh/OneDrive/Desktop/Sentiment%20analysis/requirements.txt)
+
+Dependencies: `streamlit`, `scikit-learn`, `pandas`, `numpy`, `matplotlib`, `seaborn`, `nltk`, `textblob`, `wordcloud`, `joblib`.
+
+---
+
+### Backend ML Pipeline
+
+#### [NEW] [preprocessing.py](file:///c:/Users/Roopesh/OneDrive/Desktop/Sentiment%20analysis/preprocessing.py)
+
+- Lowercase conversion, punctuation/special-char removal, stopword removal, tokenization, lemmatization (NLTK)
+- Batch preprocessing for DataFrames
+- Auto-download of required NLTK data (`punkt`, `stopwords`, `wordnet`)
+
+#### [NEW] [feature_extraction.py](file:///c:/Users/Roopesh/OneDrive/Desktop/Sentiment%20analysis/feature_extraction.py)
+
+- TF-IDF vectorizer (max 5000 features, uni+bigrams)
+- Bag-of-Words vectorizer
+- Save/load vectorizers with `joblib`
+
+#### [NEW] [model.py](file:///c:/Users/Roopesh/OneDrive/Desktop/Sentiment%20analysis/model.py)
+
+- Train Multinomial Naive Bayes and Logistic Regression classifiers
+- Evaluate with accuracy, precision, recall, F1 score, confusion matrix, classification report
+- Save/load trained models with `joblib`
+- Single-review and batch prediction functions
+
+#### [NEW] [train.py](file:///c:/Users/Roopesh/OneDrive/Desktop/Sentiment%20analysis/train.py)
+
+- Loads CSV dataset, preprocesses, extracts features, trains both models
+- Prints full evaluation metrics comparison table
+- Saves best model + vectorizer to `models/` directory
+- Uses stratified train/test split (80/20)
+
+---
+
+### Streamlit Web Interface
+
+#### [NEW] [app.py](file:///c:/Users/Roopesh/OneDrive/Desktop/Sentiment%20analysis/app.py)
+
+Full Streamlit app with sidebar navigation and three pages:
+
+| Page | Features |
+|---|---|
+| **🔍 Analyze Review** | Text input → sentiment prediction with confidence score, emoji indicator, color-coded card |
+| **📊 Batch Analysis** | CSV upload → per-review predictions table, downloadable results CSV, summary stats |
+| **📈 Visualizations** | Pie chart, bar chart, word clouds per sentiment class |
+
+Additional features:
+- Model selection (Naive Bayes / Logistic Regression)
+- Feature extraction toggle (TF-IDF / BoW)
+- Auto-train on first run if no saved model exists
+- Modern dark-themed custom CSS
+
+---
+
+## Verification Plan
+
+### Automated Tests
+
+1. **Train the models** and confirm they are saved:
+   ```
+   cd "c:\Users\Roopesh\OneDrive\Desktop\Sentiment analysis"
+   python train.py
+   ```
+   Expected: prints accuracy/precision/recall/F1 for both models, saves `.joblib` files in `models/`.
+
+2. **Launch the Streamlit app** and verify via browser:
+   ```
+   streamlit run app.py
+   ```
+   - Input positive review → should predict **Positive**
+   - Input negative review → should predict **Negative**
+   - Upload sample CSV → batch results and charts should render
+
+### Manual Verification
+- Visually confirm charts render correctly in the Streamlit dashboard
+- Confirm CSV download button works
